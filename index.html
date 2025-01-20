@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Salvemos MithosMC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+      }
+      .progress-bar-animation {
+        transition: width 1s ease-in-out;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <header class="bg-indigo-600 text-white sticky top-0 z-50 shadow-md">
+      <nav class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+          <a href="#" class="text-2xl font-bold">MithosMC</a>
+          <button
+            class="bg-white text-indigo-600 px-6 py-2 rounded-full font-semibold hover:bg-indigo-100 transition duration-300"
+          >
+            Donar
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+      <section class="text-center mb-16">
+        <h1 class="text-6xl font-bold mb-6 text-indigo-600 tracking-tight">
+          Salvemos MithosMC
+        </h1>
+        <p class="text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          Juntos reconstruiremos nuestra comunidad. Cada contribución cuenta.
+        </p>
+      </section>
+
+      <section id="progress" class="mb-16">
+        <div class="bg-white rounded-xl shadow-lg p-10">
+          <h2 class="text-4xl font-bold mb-8 text-indigo-600 text-center">
+            Progreso de la Recaudación
+          </h2>
+          <div class="mb-6">
+            <div class="w-full bg-gray-100 rounded-full h-12 overflow-hidden">
+              <div
+                id="progress-bar"
+                class="progress-bar-animation bg-gradient-to-r from-indigo-500 via-indigo-600 to-indigo-700 h-full rounded-full flex items-center justify-center"
+                style="width: 0%"
+              >
+                <span
+                  id="progress-text"
+                  class="text-lg font-bold text-white drop-shadow-md px-4"
+                ></span>
+              </div>
+            </div>
+          </div>
+          <div class="text-center space-y-2">
+            <p id="progress-amount" class="text-3xl font-bold text-gray-800"></p>
+            <p id="remaining-amount" class="text-lg text-gray-600"></p>
+          </div>
+        </div>
+      </section>
+
+      <section id="payment-history" class="mb-16">
+        <div class="bg-white rounded-xl shadow-lg p-10">
+          <h2 class="text-4xl font-bold mb-8 text-indigo-600 text-center">
+            Donantes Recientes
+          </h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full">
+              <thead class="bg-indigo-50">
+                <tr>
+                  <th class="py-4 px-6 text-left text-lg font-semibold text-indigo-600">Donante</th>
+                  <th class="py-4 px-6 text-left text-lg font-semibold text-indigo-600">Cantidad</th>
+                </tr>
+              </thead>
+              <tbody id="payment-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-16">
+        <div class="bg-white rounded-xl shadow-lg p-10">
+          <h2 class="text-4xl font-bold mb-8 text-indigo-600 text-center">
+            Nuestra Misión
+          </h2>
+          <p class="text-xl text-gray-700 leading-relaxed mb-6">
+            MithosMC ha enfrentado un desafío sin precedentes, pero juntos lo
+            superaremos. Nuestro objetivo es recaudar fondos para:
+          </p>
+          <ul class="list-none space-y-4 mb-6">
+            <li class="flex items-center text-lg text-gray-700">
+              <svg class="w-6 h-6 text-indigo-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Adquirir un nuevo host con mayor seguridad
+            </li>
+            <li class="flex items-center text-lg text-gray-700">
+              <svg class="w-6 h-6 text-indigo-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Implementar sistemas de seguridad avanzados
+            </li>
+            <li class="flex items-center text-lg text-gray-700">
+              <svg class="w-6 h-6 text-indigo-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Reconstruir y mejorar el mundo de MithosMC
+            </li>
+          </ul>
+          <p class="text-xl text-gray-700 leading-relaxed">
+            Con tu ayuda, crearemos un MithosMC más fuerte y emocionante que
+            nunca.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6">
+      <div class="container mx-auto px-4 text-center">
+        <p>&copy; 2024 MithosMC. Todos los derechos reservados.</p>
+      </div>
+    </footer>
+
+    <script>
+      const goalAmount = 400;
+      let paymentData = null;
+
+      async function fetchPaymentData() {
+        try {
+          const response = await fetch("payments.json");
+          if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+          const data = await response.json();
+          const payments = Array.isArray(data.payments) ? data.payments : [];
+          
+          paymentData = {
+            payments: payments,
+            totalAmount: payments.reduce(
+              (total, payment) => total + (Number(payment.amount) || 0),
+              0
+            ),
+          };
+          
+          updateProgressBar();
+          populatePaymentHistory();
+        } catch (error) {
+          console.error("Error:", error);
+          paymentData = { payments: [], totalAmount: 0 };
+          updateProgressBar();
+        }
+      }
+
+      function updateProgressBar() {
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("progress-text");
+        const progressAmount = document.getElementById("progress-amount");
+        const remainingAmount = document.getElementById("remaining-amount");
+        
+        const totalAmount = Number(paymentData.totalAmount) || 0;
+        const percentage = Math.min((totalAmount / goalAmount) * 100, 100);
+        const remaining = Math.max(goalAmount - totalAmount, 0);
+
+        progressBar.style.width = `${Math.max(percentage, 1)}%`; // Mínimo 1% para siempre mostrar algo
+        progressText.textContent = `${percentage.toFixed(1)}%`;
+        progressAmount.textContent = `${totalAmount.toFixed(2)}€ recaudados`;
+        remainingAmount.textContent = `Faltan ${remaining.toFixed(2)}€ para alcanzar el objetivo`;
+      }
+
+      function populatePaymentHistory() {
+        const tableBody = document.getElementById("payment-table-body");
+        tableBody.innerHTML = "";
+
+        if (!paymentData.payments?.length) {
+          tableBody.innerHTML = `
+            <tr>
+              <td colspan="2" class="py-6 px-6 text-center text-gray-500 italic">
+                No hay donaciones registradas aún
+              </td>
+            </tr>`;
+          return;
+        }
+
+        paymentData.payments.slice(0, 5).forEach((payment, index) => {
+          const row = document.createElement("tr");
+          row.className = index % 2 === 0 ? "bg-gray-50" : "bg-white";
+          row.innerHTML = `
+            <td class="py-4 px-6">
+              <div class="font-semibold">${payment.username || 'Anónimo'}</div>
+            </td>
+            <td class="py-4 px-6 text-indigo-600 font-semibold">${Number(payment.amount).toFixed(2)}€</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      fetchPaymentData();
+    </script>
+  </body>
+</html>

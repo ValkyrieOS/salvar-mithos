@@ -1,0 +1,10 @@
+{
+  "payments": [
+    {
+      "email": "adrialopezfernandez@gmail.com",
+      "username": "Glazzier",
+      "amount": 4,
+      "id": "PAY-001"
+    }
+  ]
+}
