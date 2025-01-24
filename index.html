@@ -12,19 +12,98 @@
     <style>
       body {
         font-family: "Poppins", sans-serif;
-        background: #0f172a;
+        background: radial-gradient(circle at center, #1e293b, #0f172a);
+        min-height: 100vh;
       }
-      .progress-bar-animation {
-        transition: width 1s ease-in-out;
+      
+      @keyframes float {
+        0% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-10px) rotate(2deg); }
+        100% { transform: translateY(0px) rotate(0deg); }
       }
+
+      @keyframes pulse {
+        0% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.05); filter: brightness(1.2); }
+        100% { transform: scale(1); filter: brightness(1); }
+      }
+
+      @keyframes slideIn {
+        from { 
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes goldShine {
+        0% { background-position: -100% 0; }
+        100% { background-position: 200% 0; }
+      }
+
+      .gold-card {
+        background: linear-gradient(45deg, #2d1b0e, #4a3319);
+        border: 2px solid #ffd700;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gold-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 215, 0, 0.2),
+          transparent
+        );
+        animation: goldShine 3s linear infinite;
+      }
+
+      .gold-gradient {
+        background: linear-gradient(to right, #ffd700, #ffa500, #ffd700);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: goldShine 3s linear infinite;
+        background-size: 200% 100%;
+      }
+
       .glass-effect {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(10px);
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
       }
+
+      .glass-effect:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .gold-donor-row {
+        background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), transparent);
+        border-left: 3px solid #ffd700;
+        transition: all 0.3s ease;
+      }
+
+      .gold-donor-row:hover {
+        background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), transparent);
+        transform: scale(1.02);
+      }
+
       .glow {
-        text-shadow: 0 0 20px rgba(129, 140, 248, 0.5);
+        text-shadow: 0 0 30px rgba(129, 140, 248, 0.6);
       }
+
       .modal {
         display: none;
         position: fixed;
@@ -32,34 +111,158 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.8);
         z-index: 1000;
         opacity: 0;
-        transition: opacity 0.3s ease;
+        transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
+
       .modal.active {
         display: flex;
         opacity: 1;
       }
+
       .modal-content {
-        transform: scale(0.95);
-        transition: transform 0.3s ease;
+        transform: scale(0.9) translateY(20px);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
+
       .modal.active .modal-content {
-        transform: scale(1);
+        transform: scale(1) translateY(0);
+      }
+
+      .hover-scale {
+        transition: transform 0.2s ease;
+      }
+
+      .hover-scale:hover {
+        transform: scale(1.05);
+      }
+
+      @keyframes progressPulse {
+        0% { transform: scale(1); filter: brightness(1); }
+        50% { transform: scale(1.02); filter: brightness(1.2); }
+        100% { transform: scale(1); filter: brightness(1); }
+      }
+
+      @keyframes progressGlow {
+        0% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+        50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.5); }
+        100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3); }
+      }
+
+      .progress-container {
+        position: relative;
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 20px;
+        padding: 4px;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+      }
+
+      .progress-bar {
+        background: linear-gradient(90deg, 
+          rgba(99, 102, 241, 0.8), 
+          rgba(168, 85, 247, 0.8), 
+          rgba(99, 102, 241, 0.8)
+        );
+        background-size: 200% 100%;
+        animation: gradientMove 3s linear infinite, progressGlow 2s ease-in-out infinite;
+        border-radius: 16px;
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 2rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .progress-bar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transform: translateX(-100%);
+        animation: shimmer 2s infinite;
+      }
+
+      @keyframes shimmer {
+        100% { transform: translateX(100%); }
+      }
+
+      .progress-marker {
+        position: absolute;
+        width: 2px;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.3);
+        top: -15px;
+      }
+
+      .progress-label {
+        position: absolute;
+        font-size: 0.75rem;
+        color: #94a3b8;
+        transform: translateX(-50%);
+        top: -25px;
+      }
+
+      .percentage-pill {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.2));
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-weight: 600;
+        color: #e2e8f0;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .percentage-pill:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.5);
+      }
+
+      .number-animation {
+        animation: numberCount 0.5s ease-out forwards;
+      }
+
+      .percentage-badge {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+      }
+
+      .percentage-badge:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: scale(1.05);
       }
     </style>
   </head>
   <body class="bg-slate-900 text-gray-100">
-    <header class="glass-effect sticky top-0 z-50 shadow-lg shadow-indigo-500/10">
+    <div class="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/diamond-upholstery.png')] opacity-5 pointer-events-none"></div>
+    
+    <header class="glass-effect sticky top-0 z-50 shadow-lg shadow-indigo-500/10 border-b border-indigo-500/20">
       <nav class="container mx-auto px-6 py-5">
         <div class="flex justify-between items-center">
-          <a href="#" class="text-2xl font-bold text-white flex items-center gap-2">
-            <span class="text-indigo-400">Mithos</span>MC
+          <a href="#" class="text-3xl font-bold text-white flex items-center gap-2 hover-scale">
+            <span class="text-indigo-400 float-animation">Mithos</span>
+            <span class="bg-gradient-to-r from-indigo-400 to-purple-400 text-transparent bg-clip-text">MC</span>
           </a>
           <button
             id="donateBtn"
-            class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition duration-300 shadow-lg shadow-indigo-600/20"
+            class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-indigo-500 hover:to-purple-500 transition-all duration-300 shadow-lg shadow-indigo-600/20 shine-effect hover:scale-105 transform hover:-translate-y-1"
           >
             Donar
           </button>
@@ -68,8 +271,9 @@
     </header>
 
     <main class="container mx-auto px-4 py-12">
-      <section class="text-center mb-20">
-        <h1 class="text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 glow tracking-tight">
+      <section class="text-center mb-20 slide-in relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-indigo-500/20 to-transparent rounded-3xl blur-3xl -z-10"></div>
+        <h1 class="text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400 glow tracking-tight pulse-animation">
           Salvemos MithosMC
         </h1>
         <p class="text-2xl text-gray-400 max-w-3xl mx-auto leading-relaxed">
@@ -77,52 +281,103 @@
         </p>
       </section>
 
-      <section id="progress" class="mb-20">
+      <section id="payment-history" class="mb-20 slide-in" style="animation-delay: 0.2s">
+        <div class="glass-effect rounded-2xl shadow-xl p-12 relative overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-b from-yellow-500/10 to-transparent -z-10"></div>
+          
+          <!-- Donantes Oro -->
+          <div class="mb-16">
+            <h3 class="text-3xl font-bold mb-8 gold-gradient flex items-center justify-center gap-3">
+              <svg class="w-10 h-10 float-animation" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+              </svg>
+              Donantes Oro
+              <svg class="w-10 h-10 float-animation" fill="currentColor" viewBox="0 0 24 24" style="animation-delay: 0.5s">
+                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+              </svg>
+            </h3>
+            <div class="gold-card rounded-xl p-6 mb-8">
+              <div class="overflow-x-auto">
+                <table class="min-w-full">
+                  <thead>
+                    <tr>
+                      <th class="py-4 px-6 text-left text-lg font-semibold gold-gradient">Donante</th>
+                      <th class="py-4 px-6 text-left text-lg font-semibold gold-gradient">Cantidad</th>
+                    </tr>
+                  </thead>
+                  <tbody id="gold-donors-table"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Donantes Normales -->
+          <div>
+            <h3 class="text-2xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+              Donantes Normales
+            </h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full">
+                <thead class="border-b border-slate-700">
+                  <tr>
+                    <th class="py-4 px-6 text-left text-lg font-semibold text-indigo-400">Donante</th>
+                    <th class="py-4 px-6 text-left text-lg font-semibold text-indigo-400">Cantidad</th>
+                  </tr>
+                </thead>
+                <tbody id="normal-donors-table"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="progress" class="mb-20 slide-in" style="animation-delay: 0.4s">
         <div class="glass-effect rounded-2xl shadow-xl p-12">
           <h2 class="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 text-center">
             Progreso de la Recaudación
           </h2>
-          <div class="mb-8">
-            <div class="w-full bg-slate-800 rounded-full h-14 overflow-hidden shadow-inner">
-              <div
-                id="progress-bar"
-                class="progress-bar-animation bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-500 h-full rounded-full flex items-center justify-center"
-                style="width: 0%"
-              >
-                <span
-                  id="progress-text"
-                  class="text-lg font-bold text-white drop-shadow-md px-4"
-                ></span>
+          
+          <div class="space-y-8">
+            <div class="flex justify-center">
+              <div class="percentage-pill">
+                <span id="progress-text" class="text-2xl"></span>
+                <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+              </div>
+            </div>
+
+            <div class="progress-container">
+              <!-- Marcadores de progreso -->
+              <div class="relative w-full">
+                <div class="progress-marker" style="left: 25%">
+                  <div class="progress-label">25%</div>
+                </div>
+                <div class="progress-marker" style="left: 50%">
+                  <div class="progress-label">50%</div>
+                </div>
+                <div class="progress-marker" style="left: 75%">
+                  <div class="progress-label">75%</div>
+                </div>
+              </div>
+              
+              <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <div class="text-center space-y-4">
+              <p id="progress-amount" class="text-5xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 text-transparent bg-clip-text"></p>
+              <div class="flex items-center justify-center gap-3">
+                <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <p id="remaining-amount" class="text-xl text-gray-400"></p>
               </div>
             </div>
           </div>
-          <div class="text-center space-y-3">
-            <p id="progress-amount" class="text-4xl font-bold text-white"></p>
-            <p id="remaining-amount" class="text-xl text-gray-400"></p>
-          </div>
         </div>
       </section>
 
-      <section id="payment-history" class="mb-20">
-        <div class="glass-effect rounded-2xl shadow-xl p-12">
-          <h2 class="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 text-center">
-            Donantes Recientes
-          </h2>
-          <div class="overflow-x-auto">
-            <table class="min-w-full">
-              <thead class="border-b border-slate-700">
-                <tr>
-                  <th class="py-4 px-6 text-left text-lg font-semibold text-indigo-400">Donante</th>
-                  <th class="py-4 px-6 text-left text-lg font-semibold text-indigo-400">Cantidad</th>
-                </tr>
-              </thead>
-              <tbody id="payment-table-body"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="mb-20">
+      <section class="mb-20 slide-in" style="animation-delay: 0.6s">
         <div class="glass-effect rounded-2xl shadow-xl p-12">
           <h2 class="text-4xl font-bold mb-10 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400 text-center">
             Nuestra Misión
@@ -159,7 +414,7 @@
       </section>
     </main>
 
-    <footer class="glass-effect py-8">
+    <footer class="glass-effect py-8 slide-in" style="animation-delay: 0.8s">
       <div class="container mx-auto px-4 text-center text-gray-400">
         <p>&copy; 2024 MithosMC. Todos los derechos reservados.</p>
       </div>
@@ -169,21 +424,38 @@
     <div id="donateModal" class="modal items-center justify-center">
       <div class="modal-content glass-effect p-8 rounded-2xl max-w-md mx-4 w-full">
         <h3 class="text-2xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Información de Donación</h3>
-        <p class="text-gray-300 mb-6">Para realizar una donación, por favor contacta a través de Discord:</p>
-        <div class="bg-slate-800 p-4 rounded-lg mb-6 flex items-center justify-between">
-          <span class="text-indigo-400 font-semibold">glazzier_</span>
-          <button id="copyDiscord" class="text-sm bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 transition-colors">
-            Copiar
-          </button>
+        <p class="text-gray-300 mb-6">Para realizar una donación, por favor envía tu aportación a través de PayPal:</p>
+        <div class="space-y-4">
+          <div class="bg-slate-800 p-4 rounded-lg flex items-center justify-between hover-scale">
+            <span class="text-indigo-400 font-semibold">nuria.lozano.pomared@gmail.com</span>
+            <button id="copyEmail" class="text-sm bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 transition-colors shine-effect">
+              Copiar
+            </button>
+          </div>
+          <div class="bg-slate-800/50 p-4 rounded-lg hover-scale">
+            <p class="text-gray-300 text-sm mb-2">Motivo de la donación:</p>
+            <div class="flex items-center justify-between">
+              <span class="text-indigo-400 font-semibold">donacion mithosmc</span>
+              <button id="copyReason" class="text-sm bg-indigo-600 px-4 py-2 rounded hover:bg-indigo-700 transition-colors shine-effect">
+                Copiar
+              </button>
+            </div>
+          </div>
         </div>
-        <button id="closeModal" class="w-full bg-slate-700 text-white py-3 rounded-lg hover:bg-slate-600 transition-colors">
+        <div class="mt-6 text-center">
+          <a href="https://www.paypal.com" target="_blank" rel="noopener noreferrer" class="inline-block bg-[#00457C] text-white px-6 py-3 rounded-lg hover:bg-[#003660] transition-colors mb-4 flex items-center justify-center gap-2 hover-scale shine-effect">
+            <img src="paypal.svg" alt="PayPal" class="w-6 h-6" />
+            Ir a PayPal
+          </a>
+        </div>
+        <button id="closeModal" class="w-full bg-slate-700 text-white py-3 rounded-lg hover:bg-slate-600 transition-colors hover-scale">
           Cerrar
         </button>
       </div>
     </div>
 
     <script>
-      const goalAmount = 400;
+      const goalAmount = 270;
       let paymentData = null;
 
       async function fetchPaymentData() {
@@ -220,37 +492,122 @@
         const percentage = Math.min((totalAmount / goalAmount) * 100, 100);
         const remaining = Math.max(goalAmount - totalAmount, 0);
 
-        progressBar.style.width = `${Math.max(percentage, 1)}%`; // Mínimo 1% para siempre mostrar algo
+        progressBar.style.width = `${Math.max(percentage, 1)}%`;
         progressText.textContent = `${percentage.toFixed(1)}%`;
         progressAmount.textContent = `${totalAmount.toFixed(2)}€ recaudados`;
-        remainingAmount.textContent = `Faltan ${remaining.toFixed(2)}€ para alcanzar el objetivo`;
+        remainingAmount.textContent = `Faltan ${remaining.toFixed(2)}€`;
       }
 
       function populatePaymentHistory() {
-        const tableBody = document.getElementById("payment-table-body");
-        tableBody.innerHTML = "";
+        const goldDonorsTable = document.getElementById("gold-donors-table");
+        const normalDonorsTable = document.getElementById("normal-donors-table");
+        goldDonorsTable.innerHTML = "";
+        normalDonorsTable.innerHTML = "";
 
         if (!paymentData.payments?.length) {
-          tableBody.innerHTML = `
+          const noDataMessage = `
             <tr>
               <td colspan="2" class="py-6 px-6 text-center text-gray-500 italic">
                 No hay donaciones registradas aún
               </td>
             </tr>`;
+          goldDonorsTable.innerHTML = noDataMessage;
+          normalDonorsTable.innerHTML = noDataMessage;
           return;
         }
 
-        paymentData.payments.slice(0, 5).forEach((payment, index) => {
-          const row = document.createElement("tr");
-          row.className = index % 2 === 0 ? "bg-slate-800/30" : "bg-transparent";
-          row.innerHTML = `
-            <td class="py-4 px-6">
-              <div class="font-semibold text-gray-300">${payment.username || 'Anónimo'}</div>
-            </td>
-            <td class="py-4 px-6 text-indigo-400 font-semibold">${Number(payment.amount).toFixed(2)}€</td>
-          `;
-          tableBody.appendChild(row);
+        const goldDonors = [];
+        const normalDonors = [];
+
+        paymentData.payments.forEach(payment => {
+          if (Number(payment.amount) >= 30) {
+            goldDonors.push(payment);
+          } else {
+            normalDonors.push(payment);
+          }
         });
+
+        // Función helper para crear filas
+        const createDonorRow = (payment, index, isGold) => {
+          const row = document.createElement("tr");
+          row.className = isGold 
+            ? "gold-donor-row" 
+            : (index % 2 === 0 ? "bg-slate-800/30" : "bg-transparent");
+          const hasPending = payment.pending_amount && payment.pending_amount > 0;
+          const amount = Number(payment.amount);
+          const percentage = ((amount / goalAmount) * 100).toFixed(1);
+          
+          row.innerHTML = `
+            <td class="py-6 px-6">
+              <div class="font-semibold ${isGold ? 'text-yellow-300' : 'text-gray-300'} flex items-center gap-2">
+                ${payment.username || 'Anónimo'}
+                ${isGold ? `
+                  <div class="flex gap-1">
+                    <svg class="w-5 h-5 text-yellow-400 float-animation" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                    </svg>
+                  </div>
+                ` : ''}
+                <span class="percentage-badge ${isGold ? 'text-yellow-300' : 'text-indigo-300'} ml-2">
+                  ${percentage}%
+                </span>
+              </div>
+              ${hasPending ? `
+                <div class="text-sm ${isGold ? 'text-yellow-400/80' : 'text-indigo-400'} mt-1">
+                  <span class="inline-flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Pendiente: ${Number(payment.pending_amount).toFixed(2)}€
+                    <span class="percentage-badge text-xs ml-1">
+                      +${((Number(payment.pending_amount) / goalAmount) * 100).toFixed(1)}%
+                    </span>
+                  </span>
+                </div>
+              ` : ''}
+            </td>
+            <td class="py-6 px-6">
+              <div class="font-semibold ${isGold ? 'gold-gradient text-2xl' : 'text-indigo-400'}">${amount.toFixed(2)}€</div>
+              ${hasPending ? `
+                <div class="text-sm text-gray-500 mt-1">
+                  Total previsto: ${(amount + Number(payment.pending_amount)).toFixed(2)}€
+                  <span class="percentage-badge text-xs ml-1">
+                    ${(((amount + Number(payment.pending_amount)) / goalAmount) * 100).toFixed(1)}%
+                  </span>
+                </div>
+              ` : ''}
+            </td>
+          `;
+          return row;
+        };
+
+        // Poblar tabla de donantes oro
+        if (goldDonors.length === 0) {
+          goldDonorsTable.innerHTML = `
+            <tr>
+              <td colspan="2" class="py-6 px-6 text-center text-gray-500 italic">
+                No hay donantes oro aún
+              </td>
+            </tr>`;
+        } else {
+          goldDonors.forEach((payment, index) => {
+            goldDonorsTable.appendChild(createDonorRow(payment, index, true));
+          });
+        }
+
+        // Poblar tabla de donantes normales
+        if (normalDonors.length === 0) {
+          normalDonorsTable.innerHTML = `
+            <tr>
+              <td colspan="2" class="py-6 px-6 text-center text-gray-500 italic">
+                No hay donantes normales aún
+              </td>
+            </tr>`;
+        } else {
+          normalDonors.forEach((payment, index) => {
+            normalDonorsTable.appendChild(createDonorRow(payment, index, false));
+          });
+        }
       }
 
       fetchPaymentData();
@@ -259,7 +616,8 @@
       const modal = document.getElementById('donateModal');
       const donateBtn = document.getElementById('donateBtn');
       const closeModal = document.getElementById('closeModal');
-      const copyDiscord = document.getElementById('copyDiscord');
+      const copyEmail = document.getElementById('copyEmail');
+      const copyReason = document.getElementById('copyReason');
 
       donateBtn.addEventListener('click', () => {
         modal.classList.add('active');
@@ -275,17 +633,25 @@
         }
       });
 
-      copyDiscord.addEventListener('click', () => {
-        navigator.clipboard.writeText('glazzier_').then(() => {
-          const originalText = copyDiscord.textContent;
-          copyDiscord.textContent = '¡Copiado!';
-          copyDiscord.classList.add('bg-green-600');
+      function handleCopy(element, text) {
+        navigator.clipboard.writeText(text).then(() => {
+          const originalText = element.textContent;
+          element.textContent = '¡Copiado!';
+          element.classList.add('bg-green-600');
           
           setTimeout(() => {
-            copyDiscord.textContent = originalText;
-            copyDiscord.classList.remove('bg-green-600');
+            element.textContent = originalText;
+            element.classList.remove('bg-green-600');
           }, 2000);
         });
+      }
+
+      copyEmail.addEventListener('click', () => {
+        handleCopy(copyEmail, 'nuria.lozano.pomared@gmail.com');
+      });
+
+      copyReason.addEventListener('click', () => {
+        handleCopy(copyReason, 'donacion mithosmc');
       });
     </script>
   </body>

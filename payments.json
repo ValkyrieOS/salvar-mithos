@@ -1,10 +1,16 @@
 {
   "payments": [
     {
-      "email": "adrialopezfernandez@gmail.com",
       "username": "Glazzier",
       "amount": 2,
+      "pending_amount": 3,
       "id": "PAY-001"
+    },
+    {
+      "username": "Hades",
+      "amount": 50,
+      "pending_amount": 0,
+      "id": "PAY-002"
     }
   ]
 }
